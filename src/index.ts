@@ -7,9 +7,13 @@ import commentRoutes from "./routes/comment.js"
 import likeRoutes from "./routes/like.js"
 import postRoutes from "./routes/post.js"
 import userRoutes from "./routes/user.js"
+import cors from "cors"
+import cookieParser from "cookie-parser"
 
 //MIDDLEWARES
 app.use(express.json())
+app.use(cors())
+app.use(cookieParser())
 
 app.use("/api/user", userRoutes)
 app.use("/api/post", postRoutes)

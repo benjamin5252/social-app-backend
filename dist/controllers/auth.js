@@ -1,6 +1,7 @@
-import { db } from "../connect.js";
+import { db } from "../config/mySQLConnect.js";
 import bcrypt from "bcryptjs";
 import error from "../config/errors.js";
+import jwt from "jsonwebtoken";
 export const register = (req, res) => {
     //CHECK USER IF EXITS
     const q = "SELECT * FROM users WHERE username = ?";
@@ -32,8 +33,18 @@ export const login = (req, res) => {
         const checkPassword = bcrypt.compareSync(req.body.password, data[0].password);
         if (!checkPassword)
             return res.status(400).json({ result: false, ...error(10003) });
+        const token = jwt.sign({ id: data[0].id }, "secretkey");
+        const { password, ...others } = data[0];
+        res.cookie("accessToken", token, {
+            httpOnly: true,
+            secure: true
+        }).status(200).json({ result: true, content: others });
     });
 };
 export const logout = (req, res) => {
+    res.clearCookie("accessToken", {
+        secure: true,
+        sameSite: "none"
+    }).status(200).json({ result: true });
 };
 //# sourceMappingURL=auth.js.map

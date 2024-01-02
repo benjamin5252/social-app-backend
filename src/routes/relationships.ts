@@ -3,8 +3,8 @@ import { addRelationship, deleteRelationship, getRelationship } from "../control
 
 const router = express.Router()
 
-router.get("/:userId", getRelationship)
-router.put("/:userId", addRelationship)
-router.delete("/:userId", deleteRelationship)
+router.get("/", getRelationship)
+router.put("/", addRelationship)
+router.delete("/", deleteRelationship)
 
 export default router

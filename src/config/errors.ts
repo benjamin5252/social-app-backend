@@ -4,7 +4,8 @@ export const errors =  {
   '10002': 'User not found',
   '10003': 'Wrong password or username',
   '10004': "Authentication error",
-  '10005': "Format error" 
+  '10005': "Format error",
+  '10006': "Only for the current user"
 }
 
 export const error = (errorCode)=>{

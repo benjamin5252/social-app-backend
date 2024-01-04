@@ -10,10 +10,10 @@ import commentRoutes from "./routes/comments.js";
 import likeRoutes from "./routes/likes.js";
 import postRoutes from "./routes/posts.js";
 import userRoutes from "./routes/users.js";
+import relationshipRoutes from "./routes/relationships.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import multer from "multer";
-//MIDDLEWARES
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Credentials", 'true');
     next();
@@ -43,6 +43,7 @@ app.use("/api/posts", postRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/likes", likeRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/relationships", relationshipRoutes);
 app.listen(process.env.PORT, () => {
     console.log("Server is listening on port: ", process.env.PORT);
 });

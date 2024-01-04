@@ -50,3 +50,19 @@ export const addPost = (req: Request, res: Response)=>{
   })
 }
 
+export const deletePost = (req: Request, res: Response)=>{
+  const token = req.cookies.accessToken
+  if(!token) return res.status(401).json({result: false, ...error(10004)})
+
+  jwt.verify(token, "secretkey", (err, userInfo)=>{
+    if(err) return res.status(403).json({result: false, ...error(10004)})
+
+    const q = 'DELETE FROM posts WHERE id=? AND userId=?'
+
+    db.query(q, [req.params.id, userInfo.id], (err: MysqlError, data: any[] | any)=>{
+      if (err) return res.status(500).json({result: false, content: err})
+      if(data.affectedRows > 0) return res.status(200).json({result: true})
+      return res.status(403).json({result: false, ...error(10006)})
+    })
+  })
+}

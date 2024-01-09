@@ -14,6 +14,7 @@ import relationshipRoutes from "./routes/relationships.js"
 import cors from "cors"
 import cookieParser from "cookie-parser"
 import multer from "multer"
+import * as fs from 'fs';
 
 interface MulterRequest extends Request {
   file: any;
@@ -31,9 +32,20 @@ app.use(cors({
 app.use(cookieParser())
 app.use(express.static( './public'));
 
+
+
+
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, './public/upload')
+  destination: async function (req, file, cb) {
+    const dir = './public/upload'
+    const dir1 = './public'
+    if (!fs.existsSync(dir1)){
+        fs.mkdirSync(dir1);
+        fs.mkdirSync(dir);
+    }
+    cb(null, dir)
+    
+    
   },
   filename: function (req, file, cb) {
     cb(null, Date.now() + '-' + file.originalname)

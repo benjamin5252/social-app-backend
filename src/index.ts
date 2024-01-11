@@ -15,6 +15,7 @@ import cors from "cors"
 import cookieParser from "cookie-parser"
 import multer from "multer"
 import * as fs from 'fs';
+import './websocket/index.js'
 
 interface MulterRequest extends Request {
   file: any;

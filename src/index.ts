@@ -16,7 +16,7 @@ import cookieParser from "cookie-parser"
 import multer from "multer"
 import * as fs from 'fs';
 import http from "http"
-import { WebSocketServer } from 'ws'
+import WebSocket, { WebSocketServer } from 'ws'
 
 interface MulterRequest extends Request {
   file: any;
@@ -74,7 +74,8 @@ const wss = new WebSocketServer({ server:server });
 wss.on('connection', function connection(ws) {
   console.log('A new client Connected!');
   ws.send('Welcome New Client!');
-
+  
+  console.log(wss.clients.size)
   ws.on('message', function incoming(message) {
     console.log('received: %s', message);
 

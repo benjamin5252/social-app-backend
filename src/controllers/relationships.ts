@@ -11,11 +11,14 @@ export const getRelationship = (req: Request, res: Response)=>{
 
   jwt.verify(token, "secretkey", (err, userInfo)=>{
     if(err) return res.status(403).json({result: false, ...error(10004)})
-    const q = `SELECT followerUserId FROM relationships WHERE followedUserId=?`
-    db.query(q, [req.query.followedUserId], (err: MysqlError, data: any[])=>{
-      if (err) return res.status(500).json(err)
-      return res.status(200).json({result: true, content: data.map((relationship)=> relationship.followerUserId)})
-    })
+
+    
+      const q = `SELECT followerUserId FROM relationships WHERE followedUserId=?`
+      db.query(q, [req.query.followedUserId], (err: MysqlError, data: any[])=>{
+        if (err) return res.status(500).json(err)
+        return res.status(200).json({result: true, content: data.map((relationship)=> relationship.followerUserId)})
+      })
+    
   })
 
 }
@@ -56,4 +59,20 @@ export const deleteRelationship = (req: Request, res: Response) =>{
       return res.status(200).json({result: true})
     })
   })
+}
+
+export const getFriendList = (req: Request, res: Response)=>{
+
+  const token = req.cookies.accessToken
+  if(!token) return res.status(401).json({result: false, ...error(10004)})
+
+  jwt.verify(token, "secretkey", (err, userInfo)=>{
+    if(err) return res.status(403).json({result: false, ...error(10004)})
+    const q = `SELECT  * FROM relationships WHERE followerUserId=?`
+    db.query(q, [userInfo.id], (err: MysqlError, data: any[])=>{
+      if (err) return res.status(500).json(err)
+      return res.status(200).json({result: true, content: data})
+    })
+  })
+
 }

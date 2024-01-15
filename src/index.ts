@@ -22,6 +22,10 @@ interface MulterRequest extends Request {
   file: any;
 }
 
+interface MyWebSocket extends WebSocket {
+  userId: number;
+}
+
 //MIDDLEWARES
 app.use((req, res, next)=>{
   res.header("Access-Control-Allow-Credentials", 'true')
@@ -71,21 +75,39 @@ app.use("/api/relationships", relationshipRoutes)
 
 const server = http.createServer(app)
 const wss = new WebSocketServer({ server:server });
-wss.on('connection', function connection(ws) {
+wss.on('connection', function connection(ws: MyWebSocket) {
   console.log('A new client Connected!');
   ws.send('Welcome New Client!');
   
   console.log(wss.clients.size)
-  ws.on('message', function incoming(message) {
-    console.log('received: %s', message);
+  
 
-    wss.clients.forEach(function each(client) {
-      if (client !== ws && client.readyState === WebSocket.OPEN) {
-        client.send(message);
-      }
+  // Handle incoming messages
+    ws.on('message', (message: string) => {
+        console.log(`Received: ${message}`);
+
+        // Parse JSON data
+        try {
+            const jsonData = JSON.parse(message);
+            console.log('Parsed JSON:', jsonData);
+            if(jsonData.method === 'login'){
+              ws.userId = jsonData.userId
+            }
+      
+
+            ws.send(JSON.stringify({ status: 'success', message: 'Data received' }));
+        } catch (error) {
+            console.error('Error parsing JSON');
+
+           
+     
+        }
     });
-    
-  });
+
+    // Handle WebSocket connection closure
+    ws.on('close', () => {
+        console.log('Client disconnected');
+    });
 });
 
 server.listen(process.env.PORT, ()=>{

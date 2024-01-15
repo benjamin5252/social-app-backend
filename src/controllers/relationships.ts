@@ -68,7 +68,7 @@ export const getFriendList = (req: Request, res: Response)=>{
 
   jwt.verify(token, "secretkey", (err, userInfo)=>{
     if(err) return res.status(403).json({result: false, ...error(10004)})
-    const q = `SELECT  * FROM relationships AS r LEFT JOIN users AS u ON (r.followedUserId = u.id) WHERE followerUserId=?`
+    const q = `SELECT  * FROM relationships AS r JOIN users AS u ON (r.followedUserId = u.id) WHERE followerUserId=?`
     db.query(q, [userInfo.id], (err: MysqlError, data: any[])=>{
       if (err) return res.status(500).json(err)
       return res.status(200).json({result: true, content: data})

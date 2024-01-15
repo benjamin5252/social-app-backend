@@ -23,7 +23,8 @@ interface MulterRequest extends Request {
 }
 
 interface MyWebSocket extends WebSocket {
-  userId: number;
+  userId?: number,
+  friendList?: number[]
 }
 
 //MIDDLEWARES
@@ -79,7 +80,7 @@ wss.on('connection', function connection(ws: MyWebSocket) {
   console.log('A new client Connected!');
   ws.send('Welcome New Client!');
   
-  console.log(wss.clients.size)
+
   
 
   // Handle incoming messages
@@ -90,12 +91,26 @@ wss.on('connection', function connection(ws: MyWebSocket) {
         try {
             const jsonData = JSON.parse(message);
             console.log('Parsed JSON:', jsonData);
-            if(jsonData.method === 'login'){
-              ws.userId = jsonData.userId
-            }
-      
 
-            ws.send(JSON.stringify({ status: 'success', message: 'Data received' }));
+            if(jsonData.method === 'login'){
+              if(jsonData.userId) ws.userId = jsonData.userId
+              
+              ws.send(JSON.stringify({ result: true,  reply:"login" }));
+            }
+
+            if(jsonData.method === 'getOnlineUserList'){
+             
+              const getCommonItems = (set: Set<MyWebSocket>, array: number[]) => {
+                  const arrayFromSet = Array.from(set)
+                 
+                  return arrayFromSet.filter(item => array.includes(item.userId)).map(item=>item.userId);
+              }
+              const commonItems = getCommonItems(wss.clients, jsonData.friendList)
+              
+              ws.send(JSON.stringify({ result: true, reply: "getOnlineUsers", onlineFriendList: commonItems }));
+            }
+
+            
         } catch (error) {
             console.error('Error parsing JSON');
 

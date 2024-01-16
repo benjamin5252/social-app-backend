@@ -76,11 +76,31 @@ app.use("/api/relationships", relationshipRoutes)
 
 const server = http.createServer(app)
 const wss = new WebSocketServer({ server:server });
+
+setInterval(()=>{
+  const broadCastOnlineUser = (ws: MyWebSocket)=>{
+    if(ws.friendList && ws.friendList.length > 0){
+      
+      const getCommonItems = (set: Set<MyWebSocket>, array: number[]) => {
+          const arrayFromSet = Array.from(set)
+          
+          return arrayFromSet.filter(item => array.includes(item.userId)).map(item=>item.userId);
+      }
+      const commonItems = getCommonItems(wss.clients, ws.friendList)
+      ws.send(JSON.stringify({ result: true, reply: "getOnlineUsers", onlineFriendList: commonItems }));
+    }
+  }
+
+  for(const wsItem of wss.clients){
+    broadCastOnlineUser(wsItem)
+  }
+}, 5000)
+
+
 wss.on('connection', function connection(ws: MyWebSocket) {
   console.log('A new client Connected!');
   ws.send('Welcome New Client!');
   
-
   
 
   // Handle incoming messages
@@ -99,15 +119,15 @@ wss.on('connection', function connection(ws: MyWebSocket) {
             }
 
             if(jsonData.method === 'getOnlineUserList'){
-             
-              const getCommonItems = (set: Set<MyWebSocket>, array: number[]) => {
-                  const arrayFromSet = Array.from(set)
+              if(jsonData.friendList) ws.friendList = jsonData.friendList
+              // const getCommonItems = (set: Set<MyWebSocket>, array: number[]) => {
+              //     const arrayFromSet = Array.from(set)
                  
-                  return arrayFromSet.filter(item => array.includes(item.userId)).map(item=>item.userId);
-              }
-              const commonItems = getCommonItems(wss.clients, jsonData.friendList)
+              //     return arrayFromSet.filter(item => array.includes(item.userId)).map(item=>item.userId);
+              // }
+              // const commonItems = getCommonItems(wss.clients, jsonData.friendList)
               
-              ws.send(JSON.stringify({ result: true, reply: "getOnlineUsers", onlineFriendList: commonItems }));
+              // ws.send(JSON.stringify({ result: true, reply: "getOnlineUsers", onlineFriendList: commonItems }));
             }
 
             

@@ -42,10 +42,11 @@ export const login = (req: Request, res: Response)=>{
     const token = jwt.sign({id:data[0].id}, "secretkey")
 
     const {password, ...others} = data[0]
-
+    let farFuture = new Date(new Date().getTime() + (1000*60*60*24*365*10)); // ~10y
     res.cookie("accessToken", token, {
       httpOnly: true,
-      secure: true
+      secure: true,
+      expires: farFuture
     }).status(200).json({result: true, content: others})
   })
 }

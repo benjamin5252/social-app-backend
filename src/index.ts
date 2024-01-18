@@ -17,15 +17,14 @@ import multer from "multer"
 import * as fs from 'fs';
 import http from "http"
 import WebSocket, { WebSocketServer } from 'ws'
+import { MyWebSocket } from './libs/interface.js';
+import { wsLogin, wsUpdateFriendList, wsOnClose, wsSendChatMessage } from './libs/websocket.js';
 
 interface MulterRequest extends Request {
   file: any;
 }
 
-interface MyWebSocket extends WebSocket {
-  userId?: number,
-  friendList?: number[]
-}
+
 
 //MIDDLEWARES
 app.use((req, res, next)=>{
@@ -77,107 +76,42 @@ app.use("/api/relationships", relationshipRoutes)
 const server = http.createServer(app)
 const wss = new WebSocketServer({ server:server });
 
-// setInterval(()=>{
-//   const broadCastOnlineUser = (ws: MyWebSocket)=>{
-//     if(ws.friendList && ws.friendList.length > 0){
-      
-//       const getCommonItems = (set: Set<MyWebSocket>, array: number[]) => {
-//           const arrayFromSet = Array.from(set)
-          
-//           return arrayFromSet.filter(item => array.includes(item.userId)).map(item=>item.userId);
-//       }
-//       const commonItems = getCommonItems(wss.clients, ws.friendList)
-//       ws.send(JSON.stringify({ result: true, reply: "getOnlineUsers", onlineFriendList: commonItems }));
-//     }
-//   }
 
-//   for(const wsItem of wss.clients){
-//     broadCastOnlineUser(wsItem)
-//   }
-// }, 5000)
 
 
 wss.on('connection', function connection(ws: MyWebSocket) {
   console.log('A new client Connected!');
   ws.send('Welcome New Client!');
   
-  
 
-  // Handle incoming messages
     ws.on('message', (message: string) => {
         console.log(`Received: ${message}`);
 
-        // Parse JSON data
+   
         try {
-            const jsonData = JSON.parse(message);
-            console.log('Parsed JSON:', jsonData);
+            const msgObj = JSON.parse(message);
+            console.log('Parsed JSON:', msgObj);
 
-            if(jsonData.method === 'login'){
-              if(jsonData.userId) ws.userId = jsonData.userId
-              
-              ws.send(JSON.stringify({ result: true,  reply:"login" }));
-
-              const broadCastOnlineUser = (ws: MyWebSocket)=>{
-                if(ws.friendList && ws.friendList.length > 0 && ws.friendList.includes(jsonData.userId)){
-                  
-                  const getCommonItems = (set: Set<MyWebSocket>, array: number[]) => {
-                      const arrayFromSet = Array.from(set)
-                      
-                      return arrayFromSet.filter(item => array.includes(item.userId)).map(item=>item.userId);
-                  }
-                  const commonItems = getCommonItems(wss.clients, ws.friendList)
-                  ws.send(JSON.stringify({ result: true, reply: "getOnlineUsers", onlineFriendList: commonItems }));
-                }
-              }
-            
-              for(const wsItem of wss.clients){
-                  broadCastOnlineUser(wsItem)
-              }
+            switch(msgObj.method){
+              case('login'):
+                wsLogin(wss, ws, msgObj)
+                break;
+              case('updateFriendList'):
+                wsUpdateFriendList(wss, ws, msgObj)
+                break;
+              case('sendChatMessage'):
+                wsSendChatMessage(wss, ws, msgObj)
+                break;
             }
-
-            if(jsonData.method === 'getOnlineUserList'){
-              if(jsonData.friendList) ws.friendList = jsonData.friendList
-              const getCommonItems = (set: Set<MyWebSocket>, array: number[]) => {
-                  const arrayFromSet = Array.from(set)
-                 
-                  return arrayFromSet.filter(item => array.includes(item.userId)).map(item=>item.userId);
-              }
-              const commonItems = getCommonItems(wss.clients, jsonData.friendList)
               
-              ws.send(JSON.stringify({ result: true, reply: "getOnlineUsers", onlineFriendList: commonItems }));
-
-              
-            }
-
-            
         } catch (error) {
             console.error('Error parsing JSON');
-
-           
-     
         }
     });
 
-    // Handle WebSocket connection closure
     ws.on('close', () => {
         console.log('Client disconnected');
-        const userId = ws.userId
-        const broadCastOnlineUser = (ws: MyWebSocket)=>{
-          if(ws.friendList && userId && ws.friendList.length > 0 && ws.friendList.includes(userId)){
-            
-            const getCommonItems = (set: Set<MyWebSocket>, array: number[]) => {
-                const arrayFromSet = Array.from(set)
-                
-                return arrayFromSet.filter(item => array.includes(item.userId)).map(item=>item.userId);
-            }
-            const commonItems = getCommonItems(wss.clients, ws.friendList)
-            ws.send(JSON.stringify({ result: true, reply: "getOnlineUsers", onlineFriendList: commonItems }));
-          }
-        }
-      
-        for(const wsItem of wss.clients){
-            broadCastOnlineUser(wsItem)
-        }
+        wsOnClose(wss, ws)
     });
 });
 

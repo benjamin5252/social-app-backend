@@ -6,7 +6,7 @@ export const wsSendChatMessage = (wss: WebSocketServer, ws: MyWebSocket, msgObj:
     for(const client of wss.clients){
       // @ts-ignore
       if(client.userId === msgObj.to){
-        client.send(JSON.stringify({ result: true, reply: "sendChatMessage", message: msgObj.message, from: ws.userId, to: msgObj.to}))
+        client.send(JSON.stringify({...msgObj, result: true, reply: "sendChatMessage", message: msgObj.message}))
       }
     }
   }

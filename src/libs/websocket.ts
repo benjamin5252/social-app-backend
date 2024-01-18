@@ -67,22 +67,23 @@ export const wsOnClose = (wss: WebSocketServer, ws: MyWebSocket)=>{
   }
 }
 
-
-// setInterval(()=>{
-//   const broadCastOnlineUser = (ws: MyWebSocket)=>{
-//     if(ws.friendList && ws.friendList.length > 0){
-      
-//       const getCommonItems = (set: Set<MyWebSocket>, array: number[]) => {
-//           const arrayFromSet = Array.from(set)
-          
-//           return arrayFromSet.filter(item => array.includes(item.userId)).map(item=>item.userId);
-//       }
-//       const commonItems = getCommonItems(wss.clients, ws.friendList)
-//       ws.send(JSON.stringify({ result: true, reply: "getOnlineUsers", onlineFriendList: commonItems }));
-//     }
-//   }
-
-//   for(const wsItem of wss.clients){
-//     broadCastOnlineUser(wsItem)
-//   }
-// }, 5000)
+export const swSetOnlineUserBroadcast =(wss: WebSocketServer)=>{
+  setInterval(()=>{
+    const broadCastOnlineUser = (ws: MyWebSocket)=>{
+      if(ws.friendList && ws.friendList.length > 0){
+        
+        const getCommonItems = (set: Set<MyWebSocket>, array: number[]) => {
+            const arrayFromSet = Array.from(set)
+            
+            return arrayFromSet.filter(item => array.includes(item.userId)).map(item=>item.userId);
+        }
+        const commonItems = getCommonItems(wss.clients, ws.friendList)
+        ws.send(JSON.stringify({ result: true, reply: "getOnlineUsers", onlineFriendList: commonItems }));
+      }
+    }
+  
+    for(const wsItem of wss.clients){
+      broadCastOnlineUser(wsItem)
+    }
+  }, 5000)
+}

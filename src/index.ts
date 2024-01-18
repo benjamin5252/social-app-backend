@@ -18,7 +18,7 @@ import * as fs from 'fs';
 import http from "http"
 import WebSocket, { WebSocketServer } from 'ws'
 import { MyWebSocket } from './libs/interface.js';
-import { wsLogin, wsUpdateFriendList, wsOnClose, wsSendChatMessage } from './libs/websocket.js';
+import { wsLogin, wsUpdateFriendList, wsOnClose, wsSendChatMessage, swSetOnlineUserBroadcast } from './libs/websocket.js';
 
 interface MulterRequest extends Request {
   file: any;
@@ -77,7 +77,7 @@ const server = http.createServer(app)
 const wss = new WebSocketServer({ server:server });
 
 
-
+swSetOnlineUserBroadcast(wss)
 
 wss.on('connection', function connection(ws: MyWebSocket) {
   console.log('A new client Connected!');

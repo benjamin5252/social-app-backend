@@ -4,7 +4,19 @@ import error from "../config/errors.js";
 import { Express, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { MysqlError } from "mysql";
+import { validationResult } from "express-validator";
+
 export const register = (req: Request, res: Response) => {
+  const dataErrors = validationResult(req);
+
+  if (!dataErrors.isEmpty()) {
+    return res.status(400).json({
+      result: false,
+      ...error(0),
+      message: dataErrors.array().map((item) => item.msg),
+    });
+  }
+
   //CHECK USER IF EXITS
 
   const q = "SELECT * FROM users WHERE username = ?";

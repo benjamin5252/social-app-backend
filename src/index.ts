@@ -36,7 +36,8 @@ app.use((req, res, next) => {
   next();
 });
 app.use(express.json());
-app.use(express.static("./public"));
+app.use(express.static("./public")); // add this middleware before allowedOrigins
+
 const allowedOrigins = [
   "http://localhost:3000",
   "https://benjamin5252.github.io",

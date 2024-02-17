@@ -12,7 +12,7 @@ export const register = (req: Request, res: Response) => {
   if (!dataErrors.isEmpty()) {
     return res.status(400).json({
       result: false,
-      ...error(0),
+      ...error(10005),
       message: dataErrors.array().map((item) => item.msg),
     });
   }
@@ -46,6 +46,16 @@ export const register = (req: Request, res: Response) => {
 };
 
 export const login = (req: Request, res: Response) => {
+  const dataErrors = validationResult(req);
+
+  if (!dataErrors.isEmpty()) {
+    return res.status(400).json({
+      result: false,
+      ...error(10005),
+      message: dataErrors.array().map((item) => item.msg),
+    });
+  }
+
   const q = "SELECT * FROM users WHERE username = ?";
 
   db.query(q, [req.body.username], (err: MysqlError, data: any[]) => {

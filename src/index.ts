@@ -18,6 +18,7 @@ import * as fs from "fs";
 import http from "http";
 import WebSocket, { WebSocketServer } from "ws";
 import { MyWebSocket } from "./libs/interface.js";
+import timeout from "connect-timeout";
 import {
   wsLogin,
   wsUpdateFriendList,
@@ -29,6 +30,9 @@ import {
 interface MulterRequest extends Request {
   file: any;
 }
+
+// connection timeout
+app.use(timeout(12000));
 
 //MIDDLEWARES
 app.use((req, res, next) => {
@@ -98,11 +102,8 @@ wss.on("connection", function connection(ws: MyWebSocket) {
   ws.send("Welcome New Client!");
 
   ws.on("message", (message: string) => {
-    console.log(`Received: ${message}`);
-
     try {
       const msgObj = JSON.parse(message);
-      console.log("Parsed JSON:", msgObj);
 
       switch (msgObj.method) {
         case "login":

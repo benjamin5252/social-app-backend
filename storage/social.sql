@@ -43,7 +43,6 @@ CREATE TABLE `comments` (
 
 LOCK TABLES `comments` WRITE;
 /*!40000 ALTER TABLE `comments` DISABLE KEYS */;
-INSERT INTO `comments` VALUES (1,'good','2023-12-29 13:14:10',6,14),(2,'tt','2023-12-29 13:14:18',6,14),(3,'123','2023-12-29 13:14:24',6,14),(4,'1','2023-12-29 13:14:49',6,14),(5,'2','2023-12-29 13:18:16',6,14);
 /*!40000 ALTER TABLE `comments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -64,7 +63,7 @@ CREATE TABLE `likes` (
   KEY `likePostId_idx` (`postId`),
   CONSTRAINT `likePostId` FOREIGN KEY (`postId`) REFERENCES `posts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `likeUserId` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -73,7 +72,6 @@ CREATE TABLE `likes` (
 
 LOCK TABLES `likes` WRITE;
 /*!40000 ALTER TABLE `likes` DISABLE KEYS */;
-INSERT INTO `likes` VALUES (15,6,12),(32,6,10),(33,6,13),(35,6,9),(36,6,8),(44,6,11);
 /*!40000 ALTER TABLE `likes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -94,7 +92,7 @@ CREATE TABLE `posts` (
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `userid_idx` (`userId`),
   CONSTRAINT `userId` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -103,7 +101,6 @@ CREATE TABLE `posts` (
 
 LOCK TABLES `posts` WRITE;
 /*!40000 ALTER TABLE `posts` DISABLE KEYS */;
-INSERT INTO `posts` VALUES (1,'e','qwe.png',6,NULL),(2,'from 1','sdf.png',1,NULL),(3,'from postman',NULL,2,'2023-12-27 16:37:02'),(4,'from react',NULL,6,'2023-12-28 15:31:50'),(5,'from react await',NULL,6,'2023-12-28 15:33:20'),(6,'react await 2',NULL,6,'2023-12-28 15:34:46'),(7,'react mutate',NULL,6,'2023-12-28 15:35:54'),(8,'react mutate clear',NULL,6,'2023-12-28 15:48:44'),(9,'post with img',NULL,6,'2023-12-28 16:47:55'),(10,'post with img 2',NULL,6,'2023-12-28 16:55:03'),(11,'post with img 3',NULL,6,'2023-12-28 16:56:21'),(12,'post with img 4','1703753814941-anita-austvika-kd9n89rwAdA-unsplash.jpg',6,'2023-12-28 16:56:55'),(13,'post img','1703754217471-allen-taylor-M6MDiHc2faM-unsplash.jpg',6,'2023-12-28 17:03:37'),(14,'yy','1703756837938-allen-taylor-M6MDiHc2faM-unsplash.jpg',6,'2023-12-28 17:47:17');
 /*!40000 ALTER TABLE `posts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -122,9 +119,9 @@ CREATE TABLE `relationships` (
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `followerUser_idx` (`followerUserId`),
   KEY `followedUser_idx` (`followedUserId`),
-  CONSTRAINT `followedUser` FOREIGN KEY (`followedUserId`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `followedUser` FOREIGN KEY (`followedUserId`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `followerUser` FOREIGN KEY (`followerUserId`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -133,7 +130,6 @@ CREATE TABLE `relationships` (
 
 LOCK TABLES `relationships` WRITE;
 /*!40000 ALTER TABLE `relationships` DISABLE KEYS */;
-INSERT INTO `relationships` VALUES (1,2,1),(2,6,1);
 /*!40000 ALTER TABLE `relationships` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -183,7 +179,7 @@ CREATE TABLE `users` (
   `website` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -192,7 +188,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'test','test@gmail.com','$2a$10$W2L2skjkaQYfLwSJzgJOFeZSzil5zQkch.3NKLrzqgYCSDxV4iTga','david',NULL,NULL,NULL,NULL),(2,'test2','test2@gmail.com','$2a$10$WkIGHCBiq9CNAs9kZ40VK.CtBNV5dlfvYHUU8NFdAm1oS9U8yQCW2','david2',NULL,NULL,NULL,NULL),(3,'gg','gg@email.com','$2a$10$2ol5PI0R/JQkUJ/tli3uBehdfVuTZuZ0BugtNwjK/7tCKHINvd4M.','david',NULL,NULL,NULL,NULL),(4,'david.l@amaryllo.us','','$2a$10$d.IFEr5qTlpT8tfPzo2EMeYZbSyhGBdop/SuwzQwoBFzPNX5./JRC','',NULL,NULL,NULL,NULL),(5,'david.l@amaryllo.us123','123','$2a$10$PonxgT.na8j72RrBcPLFdegDFKqM8SAlt7nYG78wFAq2/mdivQzfS','123',NULL,NULL,NULL,NULL),(6,'david1234','david1234','$2a$10$qnw3CcD1V8rvOehUsjf9MOpMQYyQx8gPbezAtJjc9jC3zPlRwAdZu','david1234',NULL,NULL,NULL,NULL);
+INSERT INTO `users` VALUES (10,'david1','david1@gmail.com','$2a$10$4XCiynFp7yhjY.htBbAoWuH1oOfK84I8m9LHuOKRdA2WfTkJJc1ty','david1',NULL,NULL,NULL,NULL),(11,'naomi1','naomi1@gmail.com','$2a$10$83nqoofuPn/Mz9cC1pK6G.DpK4SZNVoaySouVb/5dCzkyeV9Nj08C','naomi1',NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -205,4 +201,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-01-02 10:25:31
+-- Dump completed on 2024-02-22 11:31:07

@@ -31,6 +31,10 @@ interface MulterRequest extends Request {
   file: any;
 }
 
+app.get("/", (req, res) => {
+  res.send("Social app backend v1.0.0");
+}); // put this before cors to let browser see
+
 // connection timeout
 app.use(timeout(12000));
 
@@ -61,6 +65,13 @@ app.use(cors(corsOptions));
 // app.use(cors());
 app.use(cookieParser());
 
+app.use("/api/users", userRoutes);
+app.use("/api/posts", postRoutes);
+app.use("/api/comments", commentRoutes);
+app.use("/api/likes", likeRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/relationships", relationshipRoutes);
+
 const storage = multer.diskStorage({
   destination: async function (req, file, cb) {
     const dir = "./public/upload";
@@ -82,15 +93,6 @@ const uploadCallback = (req: MulterRequest, res) => {
   res.status(200).json(file.filename);
 };
 app.post("/api/upload", upload.single("file"), uploadCallback);
-app.get("/test", (req, res) => {
-  res.send("test");
-});
-app.use("/api/users", userRoutes);
-app.use("/api/posts", postRoutes);
-app.use("/api/comments", commentRoutes);
-app.use("/api/likes", likeRoutes);
-app.use("/api/auth", authRoutes);
-app.use("/api/relationships", relationshipRoutes);
 
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server: server });
@@ -98,7 +100,6 @@ const wss = new WebSocketServer({ server: server });
 swSetOnlineUserBroadcast(wss);
 
 wss.on("connection", function connection(ws: MyWebSocket) {
-  console.log("A new client Connected!");
   ws.send("Welcome New Client!");
 
   ws.on("message", (message: string) => {
@@ -122,7 +123,6 @@ wss.on("connection", function connection(ws: MyWebSocket) {
   });
 
   ws.on("close", () => {
-    console.log("Client disconnected");
     wsOnClose(wss, ws);
   });
 });

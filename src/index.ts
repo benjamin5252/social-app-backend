@@ -32,7 +32,7 @@ interface MulterRequest extends Request {
 }
 
 app.get("/", (req, res) => {
-  res.send("Social app backend v1.0.0");
+  res.send("Social app backend v1.0.1");
 }); // put this before cors to let browser see
 
 // connection timeout

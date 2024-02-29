@@ -53,8 +53,6 @@ export const searchUser = (req, res) => {
   const q = "SELECT * FROM users WHERE username LIKE CONCAT('%', ?, '%')";
   db.query(q, [searchStr], (err: MysqlError, data: any[]) => {
     if (err) return res.status(500).json(err);
-    if (data.length < 1)
-      return res.status(404).json({ result: false, ...error(10002) });
     return res.status(200).json({ result: true, content: data });
   });
 };
